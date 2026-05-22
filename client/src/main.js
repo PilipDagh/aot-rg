@@ -375,25 +375,10 @@ const playerBody = new CANNON.Body({
 });
 world.addBody(playerBody);
 
-// --- 6. INPUTS & ODM GEAR LOGIC ---
-const keys = { w: false, a: false, s: false, d: false, space: false, q: false };
-window.addEventListener('keydown', (e) => {
-    if(e.key === ' ') keys.space = true;
-    else keys[e.key.toLowerCase()] = true;
-});
-window.addEventListener('keyup', (e) => {
-    if(e.key === ' ') keys.space = false;
-    else keys[e.key.toLowerCase()] = false;
-});
+// --- INPUTS & KEYBINDS ---
+const keys = {}; 
 
-const keys = {};
 window.addEventListener('keydown', (e) => {
-    // Titan Abilities (1-0, Z, X, C, V)
-    const abilityKeys = ['1','2','3','4','5','6','7','8','9','0','z','x','c','v'];
-    if (amITitan && abilityKeys.includes(key)) {
-        socket.emit('useTitanAbility', key);
-        console.log(`Used ${myActiveTitan} Titan Ability: ${key.toUpperCase()}`);
-    }
     if(!gameStarted) return;
     const key = e.key.toLowerCase();
     keys[key] = true;
@@ -405,7 +390,14 @@ window.addEventListener('keydown', (e) => {
     // Switch Titans ([ and ])
     if (key === binds.nextTitan) socket.emit('switchTitan', 'next');
     if (key === binds.prevTitan) socket.emit('switchTitan', 'prev');
+
+    // Titan Abilities (1-0, Z, X, C, V)
+    const abilityKeys = ['1','2','3','4','5','6','7','8','9','0','z','x','c','v'];
+    if (amITitan && abilityKeys.includes(key)) {
+        socket.emit('useTitanAbility', key);
+    }
 });
+
 window.addEventListener('keyup', (e) => {
     keys[e.key.toLowerCase()] = false;
 });
