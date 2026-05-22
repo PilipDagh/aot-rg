@@ -26,6 +26,46 @@ io.on('connection', (socket) => {
       }
   });
 
+  const { handleTitanHit, handlePlayerEaten } = require('./gameLogic'); // Update your import!
+
+    // Listen for a Titan eating a player
+    socket.on('eatPlayer', (victimId) => {
+        const result = handlePlayerEaten(socket.id, victimId);
+        
+        if (result.success) {
+            // Tell the attacker their new powers
+            socket.emit('updateOwnedTitans', gameState.players[socket.id].ownedTitans);
+            
+            // Tell the victim they died
+            io.to(victimId).emit('youDied', result.stolenPowers.length > 0);
+            
+            // Tell everyone else to update the victim's position/state
+            io.emit('playerRespawned', victimId);
+
+            if (result.stolenPowers.length > 0) {
+                socket.emit('systemMessage', `You ate a shifter! Stolen powers: ${result.stolenPowers.join(', ')}`);
+            }
+        }
+    });
+
+    // Listen for Titan Abilities (1-0, Z-V)
+    socket.on('useTitanAbility', (key) => {
+        const player = gameState.players[socket.id];
+        if (player && player.isTitan) {
+            // Broadcast the ability so everyone sees the visual effect
+            io.emit('titanAbilityUsed', { id: socket.id, key: key, titanType: player.activeTitan });
+        }
+    });
+
+  const { handleTitanHit } = require('./gameLogic'); // Make sure to import it at the top!
+
+    // Listen for Sword Slashes
+    socket.on('attackTitan', (data) => {
+        handleTitanHit(data.id, data.part);
+        // Broadcast the hit so clients can play a blood effect or sound
+        io.emit('titanHit', { id: data.id, part: data.part });
+    });
+
   // Switching Titans (The [ and ] keys)
   socket.on('switchTitan', (direction) => {
       const player = gameState.players[socket.id];
@@ -123,3 +163,11 @@ app.get('*', (req, res) => {
 server.listen(3000, () => {
     console.log('AoT Server running on port 3000');
 });
+
+const { updateAILoop } = require('./gameLogic');
+
+// Run the AI loop 10 times per second
+setInterval(() => {
+    updateAILoop();
+    io.emit('updateAITitans', gameState.aiTitans);
+}, 100);
