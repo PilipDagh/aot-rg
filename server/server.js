@@ -1,65 +1,75 @@
 const express = require('express');
 const http = require('http');
-const { Server } = require('socket.io');
 const path = require('path');
-const { roster, gameState, handlePlayerJoin, handleCombat } = require('./gameLogic');
+const { Server } = require('socket.io');
+const { GameLogic } = require('./gameLogic');
+
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: "*" } });
-
-app.use(express.static(path.join(__dirname, '../client/dist')));
-app.get('*', (req, res) => res.sendFile(path.join(__dirname, '../client/dist/index.html')));
-
-io.on('connection', (socket) => {
-    socket.on('joinGame', (charName) => {
-        if (!roster[charName]) return;
-        handlePlayerJoin(socket.id, charName);
-        socket.emit('init', { id: socket.id, players: gameState.players });
-        socket.broadcast.emit('playerJoined', gameState.players[socket.id]);
-    });
-
-    socket.on('move', (data) => {
-        if (gameState.players[socket.id] && !gameState.players[socket.id].isDead) {
-            gameState.players[socket.id].x = data.x;
-            gameState.players[socket.id].z = data.z;
-        }
-    });
-
-    socket.on('castMove', (data) => {
-        const result = handleCombat(socket.id, data.key);
-        if (result) {
-            // Broadcast the visual effect!
-            io.emit('moveUsed', { attackerId: socket.id, moveName: result.moveName, type: result.type, angle: data.angle });
-            
-            // NEW: HANDLE DEATHS & RESPAWNS
-            if (result.killed.length > 0) {
-                result.killed.forEach(deadId => {
-                    io.emit('playerDied', deadId); // Tell clients to make them fall over
-                    
-                    // Respawn after 3 seconds
-                    setTimeout(() => {
-                        if (gameState.players[deadId]) {
-                            gameState.players[deadId].hp = gameState.players[deadId].maxHp;
-                            gameState.players[deadId].ult = 0;
-                            gameState.players[deadId].isDead = false;
-                            gameState.players[deadId].x = (Math.random() - 0.5) * 40;
-                            gameState.players[deadId].z = (Math.random() - 0.5) * 40;
-                            io.emit('playerRespawned', gameState.players[deadId]);
-                        }
-                    }, 3000);
-                });
-            }
-        }
-    });
-
-    socket.on('disconnect', () => {
-        delete gameState.players[socket.id];
-        io.emit('gameStateUpdate', gameState);
-    });
+const io = new Server(server, {
+  cors: { origin: "*" }
 });
 
-setInterval(() => { io.emit('gameStateUpdate', gameState); }, 50);
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`JJK Arena running on port ${PORT}`));
+const game = new GameLogic();
+
+
+app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(path.join(__dirname, '../client')));
+
+
+io.on('connection', (socket) => {
+  socket.on('joinGame', ({ name, character }) => {
+    const player = game.addPlayer(socket.id, name, character);
+    socket.emit('initSync', { id: socket.id, players: game.players });
+    io.emit('playerJoined', player);
+  });
+
+
+  socket.on('playerInput', (data) => {
+    game.updatePlayerPosition(socket.id, data);
+  });
+
+
+  socket.on('useAbility', (key) => {
+    game.handleAbility(
+      socket.id, 
+      key, 
+      (vfx) => io.emit('vfxTrigger', vfx),
+      (dmg) => io.emit('damageDealt', dmg),
+      (kill) => io.emit('playerKilled', kill)
+    );
+  });
+
+
+  socket.on('disconnect', () => {
+    game.removePlayer(socket.id);
+    io.emit('playerLeft', socket.id);
+  });
+});
+
+
+let lastTime = Date.now();
+setInterval(() => {
+  const now = Date.now();
+  const dt = (now - lastTime) / 1000;
+  lastTime = now;
+
+
+  game.updateProjectiles(
+    dt, 
+    (dmg) => io.emit('damageDealt', dmg),
+    (kill) => io.emit('playerKilled', kill)
+  );
+
+
+  io.emit('gameStateUpdate', { players: game.players, projectiles: game.projectiles });
+}, 1000 / 45);
+
+
+server.listen(PORT, () => {
+  console.log(`Server listening running on port ${PORT}`);
+});
+
