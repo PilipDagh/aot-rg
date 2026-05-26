@@ -1,172 +1,172 @@
-const gameState = {
-    players: {},
-    availableTitans: ['Attack', 'Female', 'Cart', 'Jaw', 'Colossal', 'Beast', 'Warhammer', 'Armored', 'Founding'],
-    spinalFluids: { 'fluid_1': { x: 0, y: 1, z: -15 } },
-    maxAiTitans: 41,
-    aiTitans: {}
+// THE ULTIMATE JJK ROSTER
+const roster = {
+    "Yuji": { hp: 760, ultMax: 777, moves: {
+        Q: { name: "Manji Kick", dmg: 167, cd: 1.0, type: "melee" },
+        E: { name: "Black Flash", dmg: 176, cd: 2.0, type: "melee" },
+        R: { name: "Sukuna Transform", dmg: 0, cd: 0, type: "transform", reqUlt: 777 }
+    }},
+    "Gojo": { hp: 750, ultMax: 300, moves: {
+        Q: { name: "Reversal Red", dmg: 128, cd: 5.0, type: "projectile" },
+        E: { name: "Lapse Blue", dmg: 107, cd: 4.0, type: "projectile" },
+        R: { name: "Blindfold Off", dmg: 0, cd: 0, type: "transform", reqUlt: 300 }
+    }},
+    "Megumi": { hp: 666, ultMax: 600, moves: {
+        Q: { name: "Nue", dmg: 138, cd: 5.0, type: "projectile" },
+        E: { name: "Divine Dog", dmg: 118, cd: 7.0, type: "summon" },
+        R: { name: "Chimera Shadow Garden", dmg: 0, cd: 11.0, type: "domain", reqUlt: 600 }
+    }},
+    "Todo": { hp: 670, ultMax: 400, moves: {
+        Q: { name: "Boogie Woogie", dmg: 5, cd: 1.0, type: "swap" },
+        E: { name: "Rock Throw", dmg: 97, cd: 1.0, type: "projectile" },
+        R: { name: "Brotherly Love!", dmg: 0, cd: 11.0, type: "transform", reqUlt: 400 }
+    }},
+    "Hakari": { hp: 700, ultMax: 300, moves: {
+        Q: { name: "Reserve Ball", dmg: 96, cd: 2.0, type: "projectile" },
+        E: { name: "Shutter Door", dmg: 143, cd: 4.0, type: "projectile" },
+        R: { name: "Rough Energy", dmg: 146, cd: 2.2, type: "melee", reqUlt: 0 } // Domain triggers if ult is full
+    }},
+    "Yuta": { hp: 787, ultMax: 500, moves: {
+        Q: { name: "Sword Slash", dmg: 110, cd: 1.5, type: "melee" },
+        E: { name: "Rika Manifest", dmg: 0, cd: 10.0, type: "buff" },
+        R: { name: "Pure True Love", dmg: 256, cd: 4.0, type: "beam", reqUlt: 500 }
+    }},
+    "Choso": { hp: 720, ultMax: 500, moves: {
+        Q: { name: "Blood Strike", dmg: 189, cd: 3.0, type: "melee" },
+        E: { name: "Piercing Blood", dmg: 89, cd: 4.0, type: "beam" },
+        R: { name: "Transform Ult", dmg: 0, cd: 0, type: "transform", reqUlt: 500 }
+    }},
+    "Mahito": { hp: 990, ultMax: 600, moves: {
+        Q: { name: "Idle Transfiguration", dmg: 300, cd: 5.0, type: "melee" },
+        E: { name: "Soul Worm", dmg: 132, cd: 5.0, type: "projectile" },
+        R: { name: "ISBODK", dmg: 0, cd: 0, type: "transform", reqUlt: 600 }
+    }},
+    "Jogo": { hp: 777, ultMax: 500, moves: {
+        Q: { name: "Lava Slash", dmg: 101, cd: 1.2, type: "melee" },
+        E: { name: "Magma Shot", dmg: 78, cd: 1.7, type: "projectile" },
+        R: { name: "Flame Dash", dmg: 87, cd: 2.2, type: "dash", reqUlt: 0 }
+    }},
+    "Dagon": { hp: 445, ultMax: 445, moves: {
+        Q: { name: "Crunch", dmg: 67, cd: 0.7, type: "melee" },
+        E: { name: "Spit", dmg: 75, cd: 0.9, type: "projectile" },
+        R: { name: "Transform", dmg: 0, cd: 0, type: "transform", reqUlt: 445 }
+    }},
+    "Naoya": { hp: 650, ultMax: 400, moves: {
+        Q: { name: "M1", dmg: 89, cd: 0.7, type: "melee" },
+        E: { name: "Bleedout", dmg: 138, cd: 1.67, type: "melee" },
+        R: { name: "Projection Barrage", dmg: 200, cd: 5.0, type: "dash", reqUlt: 400 }
+    }},
+    "Takaba": { hp: 690, ultMax: 700, moves: {
+        Q: { name: "Pop a Joke", dmg: 0, cd: 0.8, type: "buff" },
+        E: { name: "Wife-Fi", dmg: 50, cd: 3.0, type: "aoe" },
+        R: { name: "Truck Kun", dmg: 500, cd: 10.0, type: "projectile", reqUlt: 700 }
+    }},
+    "Junpei": { hp: 550, ultMax: 670, moves: {
+        Q: { name: "Slow Motion Punch", dmg: 43, cd: 0.69, type: "melee" },
+        E: { name: "Finger Penetrate", dmg: 67, cd: 1.7, type: "melee" },
+        R: { name: "Trash Tornado", dmg: 200, cd: 2.0, type: "aoe", reqUlt: 300 }
+    }},
+    "Nanami": { hp: 870, ultMax: 500, moves: {
+        Q: { name: "Ratio Black Flash", dmg: 195, cd: 3.5, type: "melee" },
+        E: { name: "Slow Strike", dmg: 293, cd: 5.7, type: "melee" },
+        R: { name: "Overtime", dmg: 0, cd: 20.0, type: "buff", reqUlt: 500 }
+    }},
+    "Nobara": { hp: 600, ultMax: 400, moves: {
+        Q: { name: "Nail Projectile", dmg: 101, cd: 1.3, type: "projectile" },
+        E: { name: "Bear Trap", dmg: 137, cd: 3.0, type: "trap" },
+        R: { name: "Resonance", dmg: 300, cd: 10.0, type: "target", reqUlt: 400 }
+    }},
+    "Panda": { hp: 1000, ultMax: 300, moves: {
+        Q: { name: "M1", dmg: 69, cd: 0.7, type: "melee" },
+        E: { name: "Barrage", dmg: 150, cd: 3.0, type: "melee" },
+        R: { name: "Gorilla Core", dmg: 0, cd: 0, type: "transform", reqUlt: 300 }
+    }},
+    "Toji": { hp: 900, ultMax: 300, moves: {
+        Q: { name: "Sword M1", dmg: 89, cd: 0.6, type: "melee" },
+        E: { name: "Worm Bite", dmg: 298, cd: 5.0, type: "melee" },
+        R: { name: "Swap Weapons", dmg: 0, cd: 3.0, type: "buff", reqUlt: 0 }
+    }},
+    "Mei Mei": { hp: 800, ultMax: 400, moves: {
+        Q: { name: "Crow Strike", dmg: 157, cd: 2.0, type: "projectile" },
+        E: { name: "Crow Barrage", dmg: 300, cd: 6.0, type: "projectile" },
+        R: { name: "Bird Strike", dmg: 500, cd: 10.0, type: "projectile", reqUlt: 400 }
+    }},
+    "Geto": { hp: 1200, ultMax: 500, moves: {
+        Q: { name: "M1", dmg: 111, cd: 1.4, type: "melee" },
+        E: { name: "Summon Curse", dmg: 31, cd: 5.0, type: "summon" },
+        R: { name: "Uzumaki", dmg: 400, cd: 10.0, type: "beam", reqUlt: 500 }
+    }},
+    "Urame": { hp: 1000, ultMax: 500, moves: {
+        Q: { name: "Iceberg", dmg: 115, cd: 3.0, type: "aoe" },
+        E: { name: "Ice Ball", dmg: 89, cd: 2.0, type: "projectile" },
+        R: { name: "Frost Calm", dmg: 250, cd: 8.0, type: "aoe", reqUlt: 500 }
+    }},
+    "Miwa": { hp: 760, ultMax: 300, moves: {
+        Q: { name: "Sword M1", dmg: 99, cd: 0.5, type: "melee" },
+        E: { name: "Simple Domain", dmg: 0, cd: 5.0, type: "counter" },
+        R: { name: "Batto Sword Drawing", dmg: 300, cd: 8.0, type: "dash", reqUlt: 300 }
+    }}
 };
 
-// 1. Titan Power RNG
-function rollTitanPower() {
-    const available = gameState.availableTitans;
-    if (available.length === 0) return null;
+const gameState = {
+    players: {},
+    projectiles: []
+};
 
-    const hasFounding = available.includes('Founding');
-    const others = available.filter(t => t !== 'Founding');
-
-    if (hasFounding) {
-        const roll = Math.random();
-        if (roll <= 0.05 || others.length === 0) {
-            return 'Founding';
-        }
-    }
-
-    if (others.length > 0) {
-        const randomIndex = Math.floor(Math.random() * others.length);
-        return others[randomIndex];
-    }
-    return null;
+function handlePlayerJoin(id, charName) {
+    const char = roster[charName];
+    gameState.players[id] = {
+        id: id,
+        charName: charName,
+        x: (Math.random() - 0.5) * 40,
+        z: (Math.random() - 0.5) * 40,
+        hp: char.hp,
+        maxHp: char.hp,
+        ult: 0,
+        maxUlt: char.ultMax,
+        cooldowns: { Q: 0, E: 0, R: 0 },
+        isDead: false
+    };
 }
 
-// 2. Disconnect Handling
-function handleDisconnect(playerId) {
-    const player = gameState.players[playerId];
-    if (player && player.ownedTitans.length > 0) {
-        gameState.availableTitans.push(...player.ownedTitans);
-        console.log(`Titans returned to pool: ${player.ownedTitans.join(', ')}`);
-    }
-    delete gameState.players[playerId];
-}
+function handleCombat(attackerId, key, targetPos) {
+    const p = gameState.players[attackerId];
+    if (!p || p.isDead || p.cooldowns[key] > Date.now()) return null;
 
-// 3. AI Spawner
-function spawnAITitans() {
-    for (let i = 0; i < gameState.maxAiTitans; i++) {
-        const isAbnormal = Math.random() < 0.2;
-        const height = Math.floor(Math.random() * (108 - 38 + 1)) + 38;
-        const angle = Math.random() * Math.PI * 2;
-        const distance = 450 + Math.random() * 350; 
-        
-        gameState.aiTitans['ai_' + i] = {
-            id: 'ai_' + i,
-            x: Math.cos(angle) * distance,
-            y: height / 2,
-            z: Math.sin(angle) * distance,
-            height: height,
-            type: isAbnormal ? 'Abnormal' : 'Pure',
-            baseSpeed: isAbnormal ? 1.2 : 0.4,
-            speed: isAbnormal ? 1.2 : 0.4,
-            targetDir: { x: 0, z: 0 },
-            changeDirTimer: 0,
-            isDead: false,
-            parts: { leftLeg: true, rightLeg: true, leftArm: true, rightArm: true, eyes: true },
-            timers: { leftLeg: 0, rightLeg: 0, leftArm: 0, rightArm: 0, eyes: 0 }
-        };
-    }
-}
-spawnAITitans();
+    const move = roster[p.charName].moves[key];
+    if (!move) return null;
 
-// 4. AI Movement & Regen Loop
-function updateAILoop() {
-    const players = Object.values(gameState.players);
+    // Check Ult Requirement
+    if (move.reqUlt > 0 && p.ult < move.reqUlt) return null;
 
-    Object.values(gameState.aiTitans).forEach(titan => {
-        if (titan.isDead) return;
+    // Apply Cooldown
+    p.cooldowns[key] = Date.now() + (move.cd * 1000);
 
-        // Process Regen Timers
-        if (!titan.parts.eyes) { titan.timers.eyes--; if(titan.timers.eyes <= 0) titan.parts.eyes = true; }
-        if (!titan.parts.leftLeg) { titan.timers.leftLeg--; if(titan.timers.leftLeg <= 0) titan.parts.leftLeg = true; }
-        if (!titan.parts.rightLeg) { titan.timers.rightLeg--; if(titan.timers.rightLeg <= 0) titan.parts.rightLeg = true; }
-        if (!titan.parts.leftArm) { titan.timers.leftArm--; if(titan.timers.leftArm <= 0) titan.parts.leftArm = true; }
-        if (!titan.parts.rightArm) { titan.timers.rightArm--; if(titan.timers.rightArm <= 0) titan.parts.rightArm = true; }
+    // If it's an Ult, drain the bar
+    if (move.reqUlt > 0) p.ult -= move.reqUlt;
 
-        // Adjust Speed based on Limbs
-        titan.speed = titan.baseSpeed;
-        if (!titan.parts.eyes) {
-            titan.speed = 0;
-        } else if (!titan.parts.leftLeg && !titan.parts.rightLeg) {
-            titan.speed = titan.baseSpeed * 0.2;
-        }
-
-        // Movement Logic
-        if (titan.speed > 0) {
-            if (titan.type === 'Pure') {
-                let nearestPlayer = null;
-                let minDist = Infinity;
-                players.forEach(p => {
-                    const dist = Math.sqrt(Math.pow(p.x - titan.x, 2) + Math.pow(p.z - titan.z, 2));
-                    if (dist < minDist) { minDist = dist; nearestPlayer = p; }
-                });
-
-                if (nearestPlayer && minDist < 1000) {
-                    const dx = nearestPlayer.x - titan.x;
-                    const dz = nearestPlayer.z - titan.z;
-                    const length = Math.sqrt(dx*dx + dz*dz);
-                    titan.x += (dx / length) * titan.speed;
-                    titan.z += (dz / length) * titan.speed;
-                }
-            } else if (titan.type === 'Abnormal') {
-                titan.changeDirTimer -= 1;
-                if (titan.changeDirTimer <= 0) {
-                    const randomAngle = Math.random() * Math.PI * 2;
-                    titan.targetDir = { x: Math.cos(randomAngle), z: Math.sin(randomAngle) };
-                    titan.changeDirTimer = Math.floor(Math.random() * 50) + 20;
-                    titan.baseSpeed = Math.random() > 0.5 ? 2.5 : 0.2; 
-                }
-                titan.x += titan.targetDir.x * titan.speed;
-                titan.z += titan.targetDir.z * titan.speed;
+    // Process Hit Detection (Simple Distance Check for now)
+    let hitPlayers = [];
+    Object.values(gameState.players).forEach(enemy => {
+        if (enemy.id !== attackerId && !enemy.isDead) {
+            const dist = Math.sqrt(Math.pow(enemy.x - p.x, 2) + Math.pow(enemy.z - p.z, 2));
+            
+            if (move.type === 'melee' && dist < 5) hitPlayers.push(enemy);
+            if (move.type === 'aoe' && dist < 15) hitPlayers.push(enemy);
+            if (move.type === 'projectile') {
+                // Projectiles will be handled by the client visuals, but we register the cast here
+                hitPlayers.push(enemy); // Simplified auto-hit for the prototype
             }
         }
     });
+
+    // Apply Damage
+    hitPlayers.forEach(enemy => {
+        enemy.hp -= move.dmg;
+        p.ult = Math.min(p.maxUlt, p.ult + move.dmg); // Gain ult from damage!
+        if (enemy.hp <= 0) enemy.isDead = true;
+    });
+
+    return { moveName: move.name, type: move.type, dmg: move.dmg, hits: hitPlayers.map(e => e.id) };
 }
 
-// 5. Combat Hit Detection
-function handleTitanHit(titanId, part) {
-    const titan = gameState.aiTitans[titanId];
-    if (!titan || titan.isDead) return;
-
-    if (part === 'nape') {
-        titan.isDead = true;
-        console.log(`Titan ${titanId} was killed!`);
-        setTimeout(() => {
-            titan.isDead = false;
-            titan.parts = { leftLeg: true, rightLeg: true, leftArm: true, rightArm: true, eyes: true };
-            const angle = Math.random() * Math.PI * 2;
-            const distance = 450 + Math.random() * 350; 
-            titan.x = Math.cos(angle) * distance;
-            titan.z = Math.sin(angle) * distance;
-        }, 5000);
-    } 
-    else if (part === 'eyes') { titan.parts.eyes = false; titan.timers.eyes = 80; }
-    else if (part === 'leftLeg') { titan.parts.leftLeg = false; titan.timers.leftLeg = 90; }
-    else if (part === 'rightLeg') { titan.parts.rightLeg = false; titan.timers.rightLeg = 90; }
-    else if (part === 'leftArm') { titan.parts.leftArm = false; titan.timers.leftArm = 90; }
-    else if (part === 'rightArm') { titan.parts.rightArm = false; titan.timers.rightArm = 90; }
-}
-
-// 6. Eating Players
-function handlePlayerEaten(attackerId, victimId) {
-    const attacker = gameState.players[attackerId];
-    const victim = gameState.players[victimId];
-
-    if (attacker && victim && attacker.isTitan) {
-        let stolenPowers = [];
-        
-        if (victim.ownedTitans.length > 0) {
-            stolenPowers = [...victim.ownedTitans];
-            attacker.ownedTitans.push(...victim.ownedTitans);
-            
-            victim.ownedTitans = [];
-            victim.activeTitan = null;
-            victim.isTitan = false;
-        }
-
-        victim.x = 0;
-        victim.y = 10;
-        victim.z = 0;
-
-        return { success: true, stolenPowers: stolenPowers };
-    }
-    return { success: false };
-}
-
-module.exports = { gameState, rollTitanPower, handleDisconnect, updateAILoop, handleTitanHit, handlePlayerEaten };
+module.exports = { roster, gameState, handlePlayerJoin, handleCombat };
