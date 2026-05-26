@@ -9,14 +9,12 @@
         body { margin: 0; overflow: hidden; background-color: #111; font-family: 'Bebas Neue', sans-serif; color: white; user-select: none; }
         canvas { display: block; }
         
-        /* Character Select Screen */
         #charSelect { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; }
         h1 { font-size: 60px; color: #ff0000; text-shadow: 2px 2px 0 #fff; margin-bottom: 10px; }
         .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; max-width: 900px; max-height: 60vh; overflow-y: auto; padding: 20px; }
         .char-btn { background: #222; border: 2px solid #555; color: white; padding: 15px; font-size: 20px; cursor: pointer; font-family: 'Bebas Neue'; transition: 0.2s; }
         .char-btn:hover { background: #ff0000; border-color: #fff; transform: scale(1.1); }
         
-        /* In-Game UI */
         #gameUI { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
         #crosshair { position: absolute; top: 50%; left: 50%; width: 6px; height: 6px; background: red; border-radius: 50%; transform: translate(-50%, -50%); }
         
@@ -29,6 +27,11 @@
         .cooldowns { position: absolute; bottom: 30px; right: 30px; display: flex; gap: 15px; }
         .cd-box { width: 60px; height: 60px; background: rgba(0,0,0,0.5); border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-direction: column; }
         .cd-key { color: #ff0000; font-size: 16px; }
+
+        /* NEW: DEATH SCREEN */
+        #deathScreen { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(150, 0, 0, 0.7); z-index: 50; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+        #deathScreen h1 { font-size: 100px; color: white; text-shadow: 5px 5px 0 #000; margin: 0; }
+        #deathScreen h2 { font-size: 40px; color: #ddd; text-shadow: 2px 2px 0 #000; }
     </style>
 </head>
 <body>
@@ -49,6 +52,12 @@
             <div class="cd-box"><span class="cd-key">E</span><span id="cdE">RDY</span></div>
             <div class="cd-box"><span class="cd-key">R</span><span id="cdR">RDY</span></div>
         </div>
+    </div>
+
+    <!-- NEW: DEATH SCREEN -->
+    <div id="deathScreen">
+        <h1>YOU DIED</h1>
+        <h2>RESPAWNING IN 3 SECONDS...</h2>
     </div>
 
     <script type="module" src="/src/main.js"></script>
