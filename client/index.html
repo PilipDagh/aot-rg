@@ -3,85 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AoT 3D Multiplayer</title>
+    <title>Attack on Titan: Web Multiplayer</title>
     <style>
-        body { margin: 0; overflow: hidden; background-color: #87CEEB; font-family: sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+        
+        body { margin: 0; overflow: hidden; background-color: #87CEEB; font-family: 'Bebas Neue', sans-serif; user-select: none; }
         canvas { display: block; }
         
+        /* Crosshair */
+        #crosshair { position: absolute; top: 50%; left: 50%; width: 10px; height: 10px; background: white; border-radius: 50%; transform: translate(-50%, -50%); mix-blend-mode: difference; pointer-events: none; display: none; z-index: 10; }
+
         /* In-Game UI */
-        #ui { position: absolute; top: 10px; left: 10px; color: white; text-shadow: 1px 1px 2px black; display: none; z-index: 10;}
-        #titanUI { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); color: yellow; font-size: 24px; text-shadow: 2px 2px 4px black; display: none; z-index: 10;}
+        #ui { position: absolute; top: 15px; left: 15px; color: white; font-size: 24px; text-shadow: 2px 2px 4px black; display: none; z-index: 10; letter-spacing: 1px;}
+        #titanUI { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); color: #ffaa00; font-size: 32px; text-shadow: 2px 2px 4px black; display: none; z-index: 10;}
+        #odmUI { position: absolute; bottom: 20px; right: 20px; color: white; text-align: right; font-size: 24px; text-shadow: 2px 2px 4px black; display: none; z-index: 10;}
         
-        /* Menus */
-        .menu-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; z-index: 100; }
-        .menu-box { background: #222; padding: 40px; border-radius: 10px; text-align: center; width: 300px; }
-        button { background: #8B0000; color: white; border: none; padding: 15px 30px; font-size: 18px; cursor: pointer; margin: 10px; border-radius: 5px; width: 100%; font-weight: bold;}
-        button:hover { background: #ff0000; }
+        /* Epic Menus */
+        .menu-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?q=80&w=1920') center/cover; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; z-index: 100; }
+        .menu-box { background: rgba(10, 10, 10, 0.85); padding: 50px; border-radius: 10px; text-align: center; width: 350px; border: 2px solid #8B0000; box-shadow: 0 0 30px rgba(139, 0, 0, 0.8); backdrop-filter: blur(5px); }
+        h1 { font-size: 50px; margin-top: 0; color: #ff3333; text-shadow: 2px 2px 0 #000; letter-spacing: 3px; }
+        h2 { font-size: 35px; color: #fff; border-bottom: 2px solid #8B0000; padding-bottom: 10px; }
         
-        .setting-row { margin: 15px 0; text-align: left; }
+        button { background: #8B0000; color: white; border: 2px solid #550000; padding: 15px 30px; font-size: 24px; cursor: pointer; margin: 10px 0; border-radius: 5px; width: 100%; font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; transition: 0.2s; }
+        button:hover { background: #ff1a1a; transform: scale(1.05); box-shadow: 0 0 15px #ff1a1a; }
+        
+        .setting-row { margin: 20px 0; text-align: left; font-size: 20px; letter-spacing: 1px;}
         .setting-row label { display: block; margin-bottom: 5px; }
-        .setting-row input[type="range"] { width: 100%; }
+        .setting-row input[type="range"] { width: 100%; cursor: pointer; }
+        
+        /* Mobile Controls */
+        #mobileUI { display: none; position: absolute; bottom: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+        .joy-bg { position: absolute; bottom: 40px; width: 120px; height: 120px; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; pointer-events: auto; }
+        .joy-stick { position: absolute; top: 35px; left: 35px; width: 50px; height: 50px; background: rgba(255,255,255,0.6); border-radius: 50%; }
+        .action-btn { padding: 15px; border-radius: 50%; width: 65px; height: 65px; background: rgba(255,255,255,0.3); border: 2px solid white; color: white; font-family: 'Bebas Neue'; font-size: 20px; pointer-events: auto; }
     </style>
 </head>
 <body>
+    <div id="crosshair"></div>
+
     <!-- In-Game UI -->
-    <div id="ui">Scouts Online: <span id="playerCount">1</span></div>
-    <div id="odmUI" style="position: absolute; bottom: 20px; right: 20px; color: white; text-align: right; font-family: monospace; font-size: 18px; text-shadow: 2px 2px 4px black; display: none; z-index: 10;">
+    <div id="ui">SCOUTS ONLINE: <span id="playerCount" style="color: #00ff00;">1</span></div>
+    <div id="titanUI">ACTIVE TITAN: <span id="activeTitanName">NONE</span></div>
+    <div id="odmUI">
         <div>GAS: <span id="gasVal" style="color: #00ff00;">100%</span></div>
         <div>BLADES: <span id="bladeCount">3</span> (<span id="bladeDurability">100%</span>)</div>
-        <div style="font-size: 12px; color: #aaa;">(Stand on the Giant Wall to Refill)</div>
+        <div style="font-size: 14px; color: #ccc; margin-top: 5px;">(STAND ON THE WALL TO REFILL)</div>
     </div>
-    <div id="titanUI">Active Titan: <span id="activeTitanName">None</span></div>
-
-    <!-- Add this inside the Settings Menu, right below Look Sensitivity -->
-    <div class="setting-row">
-      <label>Enable Mobile Controls</label>
-      <input type="checkbox" id="mobileToggle">
-  </div>
-
-  <!-- Add this right above <script type="module" src="/src/main.js"></script> -->
-  <div id="mobileUI" style="display: none; position: absolute; bottom: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;">
-      <!-- Left Joystick (Movement) -->
-      <div id="joyLeft" style="position: absolute; bottom: 40px; left: 40px; width: 120px; height: 120px; background: rgba(255,255,255,0.2); border-radius: 50%; pointer-events: auto;">
-          <div id="stickLeft" style="position: absolute; top: 35px; left: 35px; width: 50px; height: 50px; background: rgba(255,255,255,0.5); border-radius: 50%;"></div>
-      </div>
-      
-      <!-- Right Joystick (Camera) -->
-      <div id="joyRight" style="position: absolute; bottom: 40px; right: 40px; width: 120px; height: 120px; background: rgba(255,255,255,0.2); border-radius: 50%; pointer-events: auto;">
-          <div id="stickRight" style="position: absolute; top: 35px; left: 35px; width: 50px; height: 50px; background: rgba(255,255,255,0.5); border-radius: 50%;"></div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div style="position: absolute; bottom: 180px; right: 40px; pointer-events: auto; display: flex; flex-direction: column; gap: 10px;">
-          <button id="btnJump" style="padding: 15px; border-radius: 50%; width: 60px; height: 60px;">JMP</button>
-          <button id="btnGrapple" style="padding: 15px; border-radius: 50%; width: 60px; height: 60px;">GRP</button>
-          <button id="btnShift" style="padding: 15px; border-radius: 50%; width: 60px; height: 60px; background: #ffaa00;">SHF</button>
-      </div>
-  </div>
 
     <!-- Main Menu -->
     <div id="mainMenu" class="menu-overlay">
         <div class="menu-box">
             <h1>ATTACK ON TITAN</h1>
-            <button id="playBtn">Play (Join Lobby)</button>
-            <button id="settingsBtn">Settings</button>
+            <button id="playBtn">JOIN LOBBY</button>
+            <button id="settingsBtn">SETTINGS</button>
         </div>
     </div>
 
     <!-- Settings Menu -->
     <div id="settingsMenu" class="menu-overlay" style="display: none;">
         <div class="menu-box" style="width: 400px;">
-            <h2>Settings</h2>
+            <h2>SETTINGS</h2>
             <div class="setting-row">
-                <label>Render Distance: <span id="renderVal">1000</span></label>
+                <label>RENDER DISTANCE: <span id="renderVal">1000</span></label>
                 <input type="range" id="renderDist" min="100" max="2000" value="1000">
             </div>
             <div class="setting-row">
-                <label>Look Sensitivity: <span id="sensVal">1.0</span></label>
+                <label>LOOK SENSITIVITY: <span id="sensVal">1.0</span></label>
                 <input type="range" id="sensitivity" min="0.1" max="3.0" step="0.1" value="1.0">
             </div>
-            <p style="font-size: 12px; color: #aaa;">(Keybinds & Mobile Controls coming in Chunk 5!)</p>
-            <button id="closeSettingsBtn">Back</button>
+            <div class="setting-row" style="display: flex; justify-content: space-between; align-items: center;">
+                <label style="margin: 0;">ENABLE MOBILE CONTROLS</label>
+                <input type="checkbox" id="mobileToggle" style="width: 25px; height: 25px;">
+            </div>
+            <button id="closeSettingsBtn" style="margin-top: 30px;">BACK TO MENU</button>
+        </div>
+    </div>
+
+    <!-- Mobile Controls -->
+    <div id="mobileUI">
+        <div id="joyLeft" class="joy-bg" style="left: 40px;"><div id="stickLeft" class="joy-stick"></div></div>
+        <div id="joyRight" class="joy-bg" style="right: 40px;"><div id="stickRight" class="joy-stick"></div></div>
+        <div style="position: absolute; bottom: 180px; right: 40px; display: flex; flex-direction: column; gap: 15px;">
+            <button id="btnJump" class="action-btn">JMP</button>
+            <button id="btnGrapple" class="action-btn">GRP</button>
+            <button id="btnShift" class="action-btn" style="background: rgba(255, 170, 0, 0.5);">SHF</button>
         </div>
     </div>
 
