@@ -426,7 +426,7 @@ socket.on('titanHit', (data) => {
 
 // --- 11. MAIN GAME LOOP ---
 const timeStep = 1 / 60;
-let lastCallTime = performance.now();
+let lastCallTime = performance.now() / 1000; // FIX 1: Converted to seconds!
 let grapplePoint = null;
 
 function animate() {
@@ -437,13 +437,14 @@ function animate() {
     const dt = time - lastCallTime;
     lastCallTime = time;
 
-    world.step(timeStep, dt, 3);
+    // FIX 2: Capped the time difference so the physics engine never explodes!
+    world.step(timeStep, Math.min(dt, 0.1), 3);
 
     myPlayerMesh.position.copy(playerBody.position);
     myPlayerMesh.quaternion.copy(playerBody.quaternion);
 
     // Movement
-    const moveSpeed = amITitan ? 20000 : 400; // Titans are heavy, need more force
+    const moveSpeed = amITitan ? 20000 : 400; 
     if (keys[binds.forward]) playerBody.applyForce(new CANNON.Vec3(0, 0, -moveSpeed), playerBody.position);
     if (keys[binds.back]) playerBody.applyForce(new CANNON.Vec3(0, 0, moveSpeed), playerBody.position);
     if (keys[binds.left]) playerBody.applyForce(new CANNON.Vec3(-moveSpeed, 0, 0), playerBody.position);
