@@ -7,16 +7,12 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "install-all": "npm install && cd client && npm install",
     "build": "vite build client --outDir ../server/dist --emptyOutDir",
-    "start": "node server/server.js",
-    "dev": "node server/server.js & vite client"
+    "start": "node server/server.js"
   },
   "dependencies": {
     "express": "^4.19.2",
-    "socket.io": "^4.7.5"
-  },
-  "devDependencies": {
+    "socket.io": "^4.7.5",
     "three": "^0.160.0",
     "vite": "^5.0.12"
   }
